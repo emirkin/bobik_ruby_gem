@@ -8,4 +8,8 @@ Gem::Specification.new do |s|
   s.email       = 'support@usebobik.com'
   s.files       = Dir.glob(['lib/**/*.rb', 'bin/*', '[A-Z]*', 'test/**/*'])
   s.homepage    = 'https://github.com/emirkin/bobik_ruby_gem'
+
+  s.add_dependency 'httparty'
+
+  s.post_install_message = "Bobik says, \"Happy scraping!\""
 end
