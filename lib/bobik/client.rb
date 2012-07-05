@@ -1,17 +1,20 @@
+require 'json'
+require 'httparty'
+
 module Bobik
   class Client
     include HTTParty
     base_uri 'https://usebobik.com/api/v1'
 
     def initialize(opts)
-      @auth_token = opts[:auth_token] || raise Error.new("'auth_token' was not provided")
+      @auth_token = opts[:auth_token] || raise(Error.new("'auth_token' was not provided"))
       @timeout_ms = opts[:timeout_ms] || 30000
       @log = opts[:logger] || (defined?(Rails.logger) && Rails.logger)
     end
     
     
-    def scrape(json_request, block_until_done, &block)
-      request = Marshal.load(Marshal.dump(json_request))
+    def scrape(request, block_until_done, &block)
+      request = Marshal.load(Marshal.dump(request))
       request[:auth_token] = @auth_token
 
       job_response = self.class.post('/jobs.json', :body => request)
@@ -20,7 +23,7 @@ module Bobik
 
       Thread.abort_on_exception = true
       t = Thread.new do
-        wait_until_finished(job_id, block)
+        wait_until_finished(job_id, &block)
       end
       t.join if block_until_done
       true
@@ -32,22 +35,24 @@ module Bobik
     # When done, yields results to the optional block.
     # Exceptions thrown: Timeout::Error, Errno::ECONNRESET, Errno::ECONNREFUSED
     def wait_until_finished(job_id, &block)
-      @log.debug("Waiting for job #{job_id} to finish")
+      log("Waiting for job #{job_id} to finish")
       results = nil
+      errors = nil
       Timeout::timeout(@timeout_ms.to_f/1000) do
         while true
           job_response = get_job_data(job_id, false)
           progress = job_response['progress']
-          @log.debug("Job #{job_id} progress: #{progress*100}%")
+          log("Job #{job_id} progress: #{progress*100}%")
           if progress == 1
             job_response = get_job_data(job_id, true)
             results = job_response['results']
+            errors = job_response['errors']
             break
           end
           sleep(job_response['estimated_time_left_ms'].to_f/1000)
         end
       end
-      block.call(result)
+      block.call(results, errors)
     end
     
     
@@ -57,6 +62,12 @@ module Bobik
         no_results: !with_results,
         job:        job_id
       })
+    end
+
+
+    def log(msg)
+      return unless @log
+      @log.debug(msg)
     end
   end
 end
