@@ -8,7 +8,7 @@ module Bobik
 
     def initialize(opts)
       @auth_token = opts[:auth_token] || raise(Error.new("'auth_token' was not provided"))
-      @timeout_ms = opts[:timeout_ms] || 30000
+      @timeout_ms = opts[:timeout_ms] || 60000
       @log = opts[:logger] || (defined?(Rails.logger) && Rails.logger)
     end
     
