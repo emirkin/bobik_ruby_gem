@@ -4,13 +4,13 @@ This is a community-supported Bobik SDK for web scraping in Ruby.
 
 ### Installing
 
-+ Install directly:
++ Either install directly and system-wide:
   1. Run `gem install bobik` from command line
   2. Add `require 'bobik'` to your Ruby code
 
-+ Add to bundler:
++ Or, add to bundler:
   1. add `gem 'bobik'` to Gemfile
-  2. Unless you're using Rails, add `require 'bobik'` to your Ruby code
+  2. Unless you're using Rails (which includes all gems from Gemfile automatically), add `require 'bobik'` to your Ruby code
 
 ### Using
 Here's a quick example to get you started.
