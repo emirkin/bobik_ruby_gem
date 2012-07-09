@@ -12,6 +12,7 @@ module Bobik
     # * :auth_token - [required] authentication token
     # * :timeout_ms - [optional] when to stop waiting for the job to finish
     # * :logger - [optional] any logger that conforms to the Log4r interface
+    # Be aware that Timeout::Error may be thrown.
     def initialize(opts)
       @auth_token = opts[:auth_token] || raise(Error.new("'auth_token' was not provided"))
       @timeout_ms = opts[:timeout_ms] || 60000
