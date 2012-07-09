@@ -18,8 +18,8 @@ module Bobik
       @timeout_ms = opts[:timeout_ms] || 60000
       @log = opts[:logger] || (defined?(Rails.logger) && Rails.logger)
     end
-    
-    # Submit a scraping request.
+
+    # Submit a scraping request. Request is a JSON composed in accordance with http://usebobik.com/api/docs
     # The callback block will be invoked when results arrive.
     # If asynchronous mode is used, the method returns right away.
     # Otherwise, it blocks until results arrive.
