@@ -2,17 +2,26 @@ require 'json'
 require 'httparty'
 
 module Bobik
+  # Author::    Eugene Mirkin
+  # This is the main class for interacting with Bobik platform.
   class Client
     include HTTParty
     base_uri 'https://usebobik.com/api/v1'
 
+    # Notable parameters:
+    # * :auth_token - [required] authentication token
+    # * :timeout_ms - [optional] when to stop waiting for the job to finish
+    # * :logger - [optional] any logger that conforms to the Log4r interface
     def initialize(opts)
       @auth_token = opts[:auth_token] || raise(Error.new("'auth_token' was not provided"))
       @timeout_ms = opts[:timeout_ms] || 60000
       @log = opts[:logger] || (defined?(Rails.logger) && Rails.logger)
     end
     
-    
+    # Submit a scraping request.
+    # The callback block will be invoked when results arrive.
+    # If asynchronous mode is used, the method returns right away.
+    # Otherwise, it blocks until results arrive.
     def scrape(request, block_until_done, &block)
       request = Marshal.load(Marshal.dump(request))
       request[:auth_token] = @auth_token
@@ -55,7 +64,7 @@ module Bobik
       block.call(results, errors)
     end
     
-    
+    # A single call to get a given job's status with or without results
     def get_job_data(job_id, with_results)
       job_response = self.class.get('/jobs.json', :body => {
         auth_token: @auth_token,
