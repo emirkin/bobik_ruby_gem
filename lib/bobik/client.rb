@@ -39,8 +39,6 @@ module Bobik
       true
     end
     
-  private
-    
     # Blocks until the job is finished or timeout is reached.
     # When done, yields results to the optional block.
     # Exceptions thrown: Timeout::Error, Errno::ECONNRESET, Errno::ECONNREFUSED

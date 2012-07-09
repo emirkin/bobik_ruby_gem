@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'bobik'
-  s.version     = '0.0.4'
+  s.version     = '0.0.5'
   s.date        = '2012-07-05'
   s.summary     = "A web service for scraping the web in real-time"
   s.description = "Bobik is a web service for scraping the web in real-time"
